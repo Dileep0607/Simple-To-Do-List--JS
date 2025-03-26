@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>To-Do LIST</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    </head>     
+    <body>
+        <div id="parent">
+            <div id="app">
+                <button id="btn">Set Task Remainders</button>
+                <div id="user">
+
+                </div>
+            </div>
+            <div id="view">
+                <ul id="taskList"></ul>
+            </div>
+            <div id="cmpt">
+                <ul id="taskdone"></ul>
+            </div>
+            <div id="searchtasks">
+                <input type="search" placeholder="Search Exsisting tasks..." class="search-input"  autocomplete="off">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+                
+            </div>
+        </div>
+        <script>
+            const bt = document.getElementById("btn");
+            let list = [];
+
+            bt.addEventListener('click', task);
+
+            function task()
+            {
+                bt.style.display = 'none';
+                const itag = document.createElement('input');
+                itag.type = 'text';
+                itag.placeholder = 'Input Your New Tasks...';
+                itag.name = 'input';
+            //    itag.style.background = 'rgba(255,255,255,0.1)';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.innerHTML = 'ADD';
+                btn.disabled = true;
+
+                const div1 = document.getElementById('user');
+                div1.appendChild(itag);
+                div1.appendChild(btn);
+
+                itag.addEventListener('input', () => {
+                    btn.disabled = itag.value.trim() === '';
+                });
+
+                btn.addEventListener('click',() => {
+                const val = itag.value.trim();
+                if(val)
+                {
+                    list.push(val);
+                    insert();
+                    itag.value = '';
+                    btn.disabled = true;
+                }
+                });
+            }
+
+            function insert() {
+                const ul = document.getElementById('taskList');
+                const li = document.createElement('li');
+                li.classList.add('task-list');
+                
+                ul.appendChild(li);
+                li.textContent = list.at(-1);
+
+                const but = document.createElement('button');
+                but.type = 'button';
+                but.innerHTML = 'Delete';
+                li.appendChild(but);
+
+                const done = document.getElementById('taskdone');
+                but.addEventListener('click', () => {
+                    li.style.textDecoration = 'line-through';
+                    /*const index = list.indexOf(task);
+                    if (index > -1) {
+                        list.splice(index, 1); // Remove task from array
+                    }
+                    ul.removeChild(li);
+                    li.removeChild(but);
+                    done.appendChild(li); */  
+                });
+            }
+
+            function complete()
+            {
+                const li = document.createElement('li');
+
+                done.appendChild(li);
+                li.textContent = 'Completed';
+            }
+            
+            const resultbox = document.getElementById('searchtasks');
+            const scbtn = document.querySelector('.search-btn');
+            const refine = document.querySelector('.search-input');
+            let searchres = [];
+            refine.onkeyup = () => 
+            {
+                const res = refine.value.toLowerCase();
+                if(res.length)
+                {
+                    searchres = list.filter(x => x.toLowerCase().includes(res));
+                    console.log(searchres);
+                }
+                
+            }
+            function display(searchres)
+            {
+                const content = searchres.map((x) =>{
+                    return "<li onclick=selectInput(this)>" + x + "</li>";
+                }).join('');
+                resultbox.innerHTML = "<ul class='search-results'>" + content.join('') + "</ul>";
+            }
+
+            function selectInput(x)
+            {
+                refine.value = x.innerHTML;
+                resultbox.innerHTML = '';
+            }
+        </script>       
+    </body>
+</html>
